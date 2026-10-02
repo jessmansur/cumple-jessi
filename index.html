@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CumpleJessi 🎂🎉</title>
+  <style>
+    :root {
+      --rosa-principal: #ff6b8b;
+      --rosa-suave: #ffe6ee;
+      --amarillo-brillante: #ffd15c;
+      --amarillo-suave: #fff9e6;
+      --texto-oscuro: #4a2e35;
+      --blanco: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: var(--amarillo-suave);
+      color: var(--texto-oscuro);
+      overflow: hidden;
+    }
+
+    /* Barra lateral */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, var(--rosa-principal) 0%, #ff8da1 100%);
+      color: var(--blanco);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .sidebar-header h2 {
+      font-size: 1.5rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .menu-options {
+      list-style: none;
+      padding: 15px 0;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-options li {
+      padding: 14px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+      border-left: 5px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-options li:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .menu-options li.active {
+      background-color: var(--amarillo-brillante);
+      color: var(--texto-oscuro);
+      border-left-color: var(--blanco);
+    }
+
+    /* Contenido principal */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    header {
+      background-color: var(--blanco);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-bottom: 3px solid var(--amarillo-brillante);
+    }
+
+    header h1 {
+      color: var(--rosa-principal);
+      font-size: 1.8rem;
+    }
+
+    .btn-reset {
+      background-color: #ff4757;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-reset:hover {
+      background-color: #e84118;
+      transform: scale(1.05);
+    }
+
+    .content {
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .block {
+      display: none;
+      background: var(--blanco);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 2px solid var(--rosa-suave);
+    }
+
+    .block.active {
+      display: block;
+    }
+
+    .subtitle-grey {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      line-height: 1.4;
+      background-color: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid var(--rosa-principal);
+    }
+
+    /* Tablas de puntajes */
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .score-table th, .score-table td {
+      padding: 12px 15px;
+      text-align: center;
+      border: 1px solid #ffe0e6;
+    }
+
+    .score-table th {
+      background-color: var(--rosa-principal);
+      color: var(--blanco);
+      font-size: 1.1rem;
+    }
+
+    .score-table td {
+      background-color: var(--rosa-suave);
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: var(--texto-oscuro);
+    }
+
+    /* Controles de Ruleta */
+    .roulette-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin-bottom: 20px;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #ff4757;
+      z-index: 5;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6px solid var(--amarillo-brillante);
+      position: relative;
+      overflow: hidden;
+      transition: transform 4s cubic-bezier(0.15, 0.99, 0.18, 1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .btn-spin {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: var(--amarillo-brillante);
+      border: 3px solid var(--blanco);
+      color: var(--texto-oscuro);
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 4;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .result-display {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--rosa-principal);
+      min-height: 50px;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    /* Botones de acción general */
+    .btn-action {
+      background-color: var(--rosa-principal);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      margin: 10px 0;
+    }
+
+    .btn-action:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .timer-display {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #333;
+      margin: 10px 0;
+    }
+
+    .winner-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .btn-team1 {
+      background-color: #48dbfb;
+      color: #0c2461;
+    }
+
+    .btn-team2 {
+      background-color: #ff9ff3;
+      color: #6f1e51;
+    }
+
+    .btn-winner {
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Tabla final */
+    .final-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .final-table th, .final-table td {
+      border: 2px solid var(--rosa-principal);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .final-table th {
+      background-color: var(--rosa-principal);
+      color: white;
+    }
+
+    .final-table tr.total-row {
+      background-color: var(--amarillo-brillante);
+      font-weight: bold;
+      font-size: 1.3rem;
+      border: 3px solid var(--rosa-principal);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        overflow: auto;
+      }
+      .sidebar {
+        width: 100%;
+      }
+      .main-wrapper {
+        overflow: visible;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra Lateral -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>CumpleJessi 💖🎂</h2>
+    </div>
+    <ul class="menu-options">
+      <li class="active" onclick="switchBlock(1)">🎬 Dígalo con mímica</li>
+      <li onclick="switchBlock(2)">🗑️ Embocá el bollo</li>
+      <li onclick="switchBlock(3)">🧮 Calculate esto</li>
+      <li onclick="switchBlock(4)">🎭 Personaje random</li>
+      <li onclick="switchBlock(5)">🧻 Carrera con rollo</li>
+      <li onclick="switchBlock(6)">🏆 Contador total</li>
+    </ul>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div class="main-wrapper">
+    <header>
+      <h1>CumpleJessi 🎉</h1>
+      <button class="btn-reset" onclick="resetGame()">🔄 Reiniciar juego</button>
+    </header>
+
+    <div class="content">
+
+      <!-- BLOQUE 1 -->
+      <div id="block-1" class="block active">
+        <h2>🎬 Dígalo con mímica</h2>
+        <p class="subtitle-grey">5 películas aleatorias por equipo, un acierto, un punto. Todas las películas tienen nombres en español y son hiper conocidas.</p>
+        
+        <div class="roulette-container">
+          <div class="wheel-wrapper">
+            <div class="pointer"></div>
+            <div id="wheel-1" class="wheel"></div>
+            <button id="spin-1" class="btn-spin" onclick="spinWheel(1)">Girar</button>
+          </div>
+          <div id="result-1" class="result-display"></div>
+          
+          <div id="game-controls-1" style="display:none; text-align:center;">
+            <button id="btn-timer-1" class="btn-action" onclick="startTimer(1, 60)">Iniciar contador de 60 segundos</button>
+            <div id="timer-display-1" class="timer-display" style="display:none;">60</div>
+            <div id="winners-1" class="winner-buttons" style="display:none;">
+              <button class="btn-winner btn-team1" onclick="addPoint(1, 1)">Ganó Equipo 1</button>
+              <button class="btn-winner btn-team2" onclick="addPoint(1, 2)">Ganó Equipo 2</button>
+            </div>
+          </div>
+        </div>
+
+        <table class="score-table">
+          <tr>
+            <th>Equipo 1</th>
+            <th>Equipo 2</th>
+          </tr>
+          <tr>
+            <td id="score-1-1">0</td>
+            <td id="score-1-2">0</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- BLOQUE 2 -->
+      <div id="block-2" class="block">
+        <h2>🗑️️ Embocá el bollo</h2>
+        <p class="subtitle-grey">7 tiros por equipo, un acierto, un punto.</p>
+        
+        <div style="text-align: center; margin: 40px 0;">
+          <div class="winner-buttons">
+            <button class="btn-winner btn-team1" onclick="addDirectPoint(2, 1, 1)">Ganó Equipo 1 (+1 pt)</button>
+            <button class="btn-winner btn-team2" onclick="addDirectPoint(2, 2, 1)">Ganó Equipo 2 (+1 pt)</button>
+          </div>
+        </div>
+
+        <table class="score-table">
+          <tr>
+            <th>Equipo 1</th>
+            <th>Equipo 2</th>
+          </tr>
+          <tr>
+            <td id="score-2-1">0</td>
+            <td id="score-2-2">0</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- BLOQUE 3 -->
+      <div id="block-3" class="block">
+        <h2>🧮 Calculate esto</h2>
+        <p class="subtitle-grey">Ambos equipos reciben el mismo papel con el mismo cálculo. Deberá calcularse en grupo y habrá un delegado que diga el resultado cuando el equipo lo acuerde. El delegado que tenga el resultado, se pone de pié y lo dice. Si el resultado es correcto, el equipo suma un punto; si es incorrecto, el punto es para el equipo contrario. Hay 3 cálculos en total.</p>
+        
+        <div style="text-align: center; margin: 40px 0;">
+          <div class="winner-buttons">
+            <button class="btn-winner btn-team1" onclick="addDirectPoint(3, 1, 1)">Ganó Equipo 1 (+1 pt)</button>
+            <button class="btn-winner btn-team2" onclick="addDirectPoint(3, 2, 1)">Ganó Equipo 2 (+1 pt)</button>
+          </div>
+        </div>
+
+        <table class="score-table">
+          <tr>
+            <th>Equipo 1</th>
+            <th>Equipo 2</th>
+          </tr>
+          <tr>
+            <td id="score-3-1">0</td>
+            <td id="score-3-2">0</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- BLOQUE 4 -->
+      <div id="block-4" class="block">
+        <h2>🎭 Adiviná el personaje random</h2>
+        <p class="subtitle-grey">Hay 6 personajes random escondidos en la rueda de la fortuna; 3 personajes por equipo. Se adivinan tipo dígalo con mímica.</p>
+        
+        <div class="roulette-container">
+          <div class="wheel-wrapper">
+            <div class="pointer"></div>
+            <div id="wheel-4" class="wheel"></div>
+            <button id="spin-4" class="btn-spin" onclick="spinWheel(4)">Girar</button>
+          </div>
+          <div id="result-4" class="result-display"></div>
+          
+          <div id="game-controls-4" style="display:none; text-align:center;">
+            <button id="btn-timer-4" class="btn-action" onclick="startTimer(4, 40)">Iniciar contador de 40 segundos</button>
+            <div id="timer-display-4" class="timer-display" style="display:none;">40</div>
+            <div id="winners-4" class="winner-buttons" style="display:none;">
+              <button class="btn-winner btn-team1" onclick="addPoint(4, 1)">Ganó Equipo 1</button>
+              <button class="btn-winner btn-team2" onclick="addPoint(4, 2)">Ganó Equipo 2</button>
+            </div>
+          </div>
+        </div>
+
+        <table class="score-table">
+          <tr>
+            <th>Equipo 1</th>
+            <th>Equipo 2</th>
+          </tr>
+          <tr>
+            <td id="score-4-1">0</td>
+            <td id="score-4-2">0</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- BLOQUE 5 -->
+      <div id="block-5" class="block">
+        <h2>🧻 Carrera con rollo</h2>
+        <p class="subtitle-grey">5 participantes por equipo jugarán una carrera de relevos. En ida y vuelta, cada participante debe trasladarse con un rollo de cocina en la cabeza, sin sostenerlo con las manos. Si se cae el rollo, pueden levantarlo y ponérselo de vuelta en la cabeza pero sin avanzar hasta que no lo tengan puesto. Acumula 3 puntos el equipo ganador de la carrera.</p>
+        
+        <div style="text-align: center; margin: 40px 0;">
+          <div class="winner-buttons">
+            <button class="btn-winner btn-team1" onclick="addDirectPoint(5, 1, 3)">Ganó Equipo 1 (+3 pts)</button>
+            <button class="btn-winner btn-team2" onclick="addDirectPoint(5, 2, 3)">Ganó Equipo 2 (+3 pts)</button>
+          </div>
+        </div>
+
+        <table class="score-table">
+          <tr>
+            <th>Equipo 1</th>
+            <th>Equipo 2</th>
+          </tr>
+          <tr>
+            <td id="score-5-1">0</td>
+            <td id="score-5-2">0</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- BLOQUE 6 -->
+      <div id="block-6" class="block">
+        <h2>🏆 Contador de puntos</h2>
+        <p class="subtitle-grey">Resumen total de puntajes acumulados en todos los bloques.</p>
+        
+        <table class="final-table">
+          <thead>
+            <tr>
+              <th>Juego / Bloque</th>
+              <th>Equipo 1</th>
+              <th>Equipo 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dígalo con mímica</td>
+              <td id="final-1-1">0</td>
+              <td id="final-1-2">0</td>
+            </tr>
+            <tr>
+              <td>Embocá el bollo</td>
+              <td id="final-2-1">0</td>
+              <td id="final-2-2">0</td>
+            </tr>
+            <tr>
+              <td>Calculate esto</td>
+              <td id="final-3-1">0</td>
+              <td id="final-3-2">0</td>
+            </tr>
+            <tr>
+              <td>Adiviná el personaje random</td>
+              <td id="final-4-1">0</td>
+              <td id="final-4-2">0</td>
+            </tr>
+            <tr>
+              <td>Carrera con rollo</td>
+              <td id="final-5-1">0</td>
+              <td id="final-5-2">0</td>
+            </tr>
+            <tr class="total-row">
+              <td>Total de puntos 💖</td>
+              <td id="total-1">0</td>
+              <td id="total-2">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Datos y Estado Inicial
+    const gamesData = {
+      1: {
+        items: ["El hijo de la novia", "La era de hielo", "Volver al futuro", "Buscando a Nemo", "Misión imposible", "Duro de matar", "Escuela de rock", "Sexto sentido", "El náufrago", "Esperando la carroza"],
+        emojis: ["🎬", "🍿", "🎥", "⭐", "🎉", "🎈", "🎂", "🥳", "✨", "🎁"],
+        available: [],
+        score1: 0,
+        score2: 0,
+        currentAngle: 0
+      },
+      4: {
+        items: ["Darth Vader", "Thor", "Jack Sparrow", "Kung Fu Panda", "Maradona", "Frida Kahlo"],
+        emojis: ["🎭", "🌟", "🎈", "👑", "💖", "🎂"],
+        available: [],
+        score1: 0,
+        score2: 0,
+        currentAngle: 0
+      },
+      2: { score1: 0, score2: 0 },
+      3: { score1: 0, score2: 0 },
+      5: { score1: 0, score2: 0 }
+    };
+
+    let activeTimers = {};
+
+    function init() {
+      gamesData[1].available = [...gamesData[1].items];
+      gamesData[4].available = [...gamesData[4].items];
+      drawWheel(1);
+      drawWheel(4);
+    }
+
+    // Dibujar Ruleta en SVG CSS Background
+    function drawWheel(blockId) {
+      const wheel = document.getElementById(`wheel-${blockId}`);
+      const items = gamesData[blockId].items;
+      const count = items.length;
+      const angle = 360 / count;
+      
+      let colors = ["#ff6b8b", "#ffd15c", "#ff9ff3", "#feca57", "#ffda79", "#ffb8b8", "#ffeaa7", "#fab1a0", "#fd79a8", "#ffe0e6"];
+      let gradient = "conic-gradient(";
+
+      for (let i = 0; i < count; i++) {
+        let col = colors[i % colors.length];
+        gradient += `${col} ${i * angle}deg ${(i + 1) * angle}deg${i === count - 1 ? '' : ', '}`;
+      }
+      gradient += ")";
+      wheel.style.background = gradient;
+    }
+
+    // Cambiar de pestaña
+    function switchBlock(blockId) {
+      document.querySelectorAll('.block').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.menu-options li').forEach(l => l.classList.remove('active'));
+
+      document.getElementById(`block-${blockId}`).classList.add('active');
+      document.querySelectorAll('.menu-options li')[blockId - 1].classList.add('active');
+      updateFinalTable();
+    }
+
+    // Girar la ruleta
+    function spinWheel(blockId) {
+      const game = gamesData[blockId];
+      if (game.available.length === 0) {
+        alert("¡Ya salieron todas las opciones de este juego!");
+        return;
+      }
+
+      const spinBtn = document.getElementById(`spin-${blockId}`);
+      spinBtn.disabled = true;
+
+      // Resetear controles
+      document.getElementById(`game-controls-${blockId}`).style.display = 'none';
+      document.getElementById(`timer-display-${blockId}`).style.display = 'none';
+      document.getElementById(`winners-${blockId}`).style.display = 'none';
+      document.getElementById(`result-${blockId}`).innerText = "";
+
+      // Seleccionar un item no repetido aleatorio
+      const randomIndex = Math.floor(Math.random() * game.available.length);
+      const selectedItem = game.available[randomIndex];
+
+      // Calcular rotación
+      const totalItems = game.items.length;
+      const itemIndex = game.items.indexOf(selectedItem);
+      const sliceAngle = 360 / totalItems;
+      
+      // Apuntar a la porción elegida
+      const targetAngle = 360 - (itemIndex * sliceAngle + sliceAngle / 2);
+      const extraSpins = 5 * 360; 
+      game.currentAngle += extraSpins + (targetAngle - (game.currentAngle % 360));
+
+      const wheel = document.getElementById(`wheel-${blockId}`);
+      wheel.style.transform = `rotate(${game.currentAngle}deg)`;
+
+      setTimeout(() => {
+        // Eliminar elemento de disponibles
+        game.available.splice(randomIndex, 1);
+
+        document.getElementById(`result-${blockId}`).innerText = selectedItem;
+        document.getElementById(`game-controls-${blockId}`).style.display = 'block';
+        document.getElementById(`btn-timer-${blockId}`).style.display = 'inline-block';
+        spinBtn.disabled = false;
+      }, 4000);
+    }
+
+    // Temporizador
+    function startTimer(blockId, seconds) {
+      document.getElementById(`btn-timer-${blockId}`).style.display = 'none';
+      const display = document.getElementById(`timer-display-${blockId}`);
+      display.style.display = 'block';
+      let left = seconds;
+      display.innerText = left;
+
+      if(activeTimers[blockId]) clearInterval(activeTimers[blockId]);
+
+      activeTimers[blockId] = setInterval(() => {
+        left--;
+        display.innerText = left;
+        if (left <= 0) {
+          clearInterval(activeTimers[blockId]);
+          document.getElementById(`winners-${blockId}`).style.display = 'flex';
+        }
+      }, 1000);
+    }
+
+    // Sumar puntos con ruleta
+    function addPoint(blockId, team) {
+      gamesData[blockId][`score${team}`]++;
+      document.getElementById(`score-${blockId}-${team}`).innerText = gamesData[blockId][`score${team}`];
+      document.getElementById(`game-controls-${blockId}`).style.display = 'none';
+      document.getElementById(`result-${blockId}`).innerText = "";
+      updateFinalTable();
+    }
+
+    // Sumar puntos directos (bloques 2, 3, 5)
+    function addDirectPoint(blockId, team, pts) {
+      gamesData[blockId][`score${team}`] += pts;
+      document.getElementById(`score-${blockId}-${team}`).innerText = gamesData[blockId][`score${team}`];
+      updateFinalTable();
+    }
+
+    // Actualizar Tabla Final
+    function updateFinalTable() {
+      let total1 = 0;
+      let total2 = 0;
+
+      for (let i = 1; i <= 5; i++) {
+        const s1 = gamesData[i].score1;
+        const s2 = gamesData[i].score2;
+        document.getElementById(`final-${i}-1`).innerText = s1;
+        document.getElementById(`final-${i}-2`).innerText = s2;
+        total1 += s1;
+        total2 += s2;
+      }
+
+      document.getElementById(`total-1`).innerText = total1;
+      document.getElementById(`total-2`).innerText = total2;
+    }
+
+    // Reiniciar Juego
+    function resetGame() {
+      if (confirm("¿Seguro que querés reiniciar todos los puntos y las ruletas?")) {
+        for (let i in activeTimers) clearInterval(activeTimers[i]);
+        
+        for (let i = 1; i <= 5; i++) {
+          gamesData[i].score1 = 0;
+          gamesData[i].score2 = 0;
+          const s1 = document.getElementById(`score-${i}-1`);
+          const s2 = document.getElementById(`score-${i}-2`);
+          if (s1) s1.innerText = "0";
+          if (s2) s2.innerText = "0";
+        }
+
+        gamesData[1].available = [...gamesData[1].items];
+        gamesData[4].available = [...gamesData[4].items];
+
+        document.querySelectorAll('.result-display').forEach(e => e.innerText = "");
+        document.querySelectorAll('[id^="game-controls-"]').forEach(e => e.style.display = 'none');
+
+        updateFinalTable();
+        alert("El juego fue reiniciado 🎉");
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
